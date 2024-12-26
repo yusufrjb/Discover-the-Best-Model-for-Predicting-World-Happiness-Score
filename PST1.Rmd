@@ -1,0 +1,51 @@
+---
+title: "PST1 Sem2"
+author: "Muhammad Yusuf Rajabiyah"
+date: "2023-03-29"
+output: html_document
+---
+
+```{r }
+data = read.csv("C:/Pemodelan Statistik/pst1/2019.csv")
+data
+```
+
+
+```{r }
+data=data[,-1:-2]
+data
+```
+
+```{r }
+png(file = "scatterfull_happiness_score.png")
+pairs(~data$Happiness.score+data$GDP.per.capita+data$Social.support+data$Healthy.life.expectancy+data$Freedom.to.make.life.choices+data$Generosity+data$Perceptions.of.corruption,data = data,main = "Happiness Score full")
+dev.off()
+
+```
+```{r }
+multi.reg<-lm(data$Happiness.score~data$GDP.per.capita+data$Social.support+data$Healthy.life.expectancy+data$Freedom.to.make.life.choices+data$Generosity+data$Perceptions.of.corruption)
+print(summary(multi.reg))
+
+```
+```{r }
+multi.reg<-lm(data$Happiness.score~data$GDP.per.capita+data$Social.support+data$Healthy.life.expectancy+data$Freedom.to.make.life.choices+data$Perceptions.of.corruption)
+print(summary(multi.reg))
+```
+```{r }
+library(tidyverse)
+library(caret)
+library(leaps)
+best.subset <-regsubsets(data$Happiness.score~data$GDP.per.capita+data$Social.support+data$Healthy.life.expectancy+data$Freedom.to.make.life.choices+data$Generosity+data$Perceptions.of.corruption, data = data, nvmax = 5)
+summary(best.subset)
+
+```
+```{r }
+res.sum <- summary(best.subset)
+data.frame(
+ Adj.R2 = which.max(res.sum$adjr2),
+ CP = which.min(res.sum$cp),
+ BIC= which.min(res.sum$bic)
+ )
+
+```
+

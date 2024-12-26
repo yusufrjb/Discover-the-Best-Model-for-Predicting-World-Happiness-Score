@@ -1,0 +1,68 @@
+---
+title: "PST1 Sem2"
+author: "Muhammad Yusuf Rajabiyah"
+date: "2023-03-29"
+output: html_document
+---
+
+```{r}
+library(tidyverse)
+library(caret)
+library(leaps)
+library(car)
+library(lmtest)
+```
+
+```{r }
+datar = read.csv("C:/Pemodelan Statistik/pst1/2019.csv")
+datar
+```
+
+
+```{r }
+data=datar[,-1:-2]
+data
+```
+
+```{r }
+full.model<-lm(data$Happiness.score~.,data)
+print(summary(full.model))
+```
+
+
+
+```{r}
+#memilih model yang optimal
+sub.fit<-regsubsets(Happiness.score~.,data)
+best.summary<-summary(sub.fit)
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(best.summary$cp)
+plot(sub.fit,scale = "Cp")
+```
+
+```{r}
+par(mfrow=c(1,2))
+plot(best.summary$bic)
+plot(sub.fit,scale = "bic")
+```
+
+```{r}
+fit2<-lm(data$Happiness.score~data$GDP.per.capita+data$Social.support+data$Healthy.life.expectancy+data$Freedom.to.make.life.choices)
+summary(fit2)
+```
+```{r}
+#uji multikolinearitas
+vif(fit2)
+```
+
+```{r}
+par(mfrow=c(2,2))
+plot(fit2)
+```
+```{r}
+#uji homoskedastisitas
+gqtest(fit2)
+```
